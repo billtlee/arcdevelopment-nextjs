@@ -1,4 +1,4 @@
-import { cloneElement, useState } from 'react';
+import { cloneElement, useState, useEffect } from 'react';
 import Link from '../Link';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,7 +16,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import HIdden from '@material-ui/core/Hidden';
+import Hidden from '@material-ui/core/Hidden';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuList from '@material-ui/core/MenuList';
 
 import { makeStyles } from '@material-ui/styles';
 
@@ -81,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.blue,
     color: 'white',
     borderRadius: '0px',
+    zIndex: 1302,
   },
   menuItem: {
     ...theme.typography.tab,
@@ -128,6 +134,8 @@ export default function Header(props) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
+
+  const path = typeof window !== 'undefined' ? window.location.pathname : null;
 
   const handleChange = (e, newValue) => {
     props.setValue(newValue);
@@ -192,20 +200,29 @@ export default function Header(props) {
   ];
 
   const activeIndex = () => {
-    var found = routes.indexOf(
-      routes.filter(({ link }) => link === window.location.pathname)[0]
-    );
-
-    const menuFound = menuOptions.some(
-      ({ link }) => link === window.location.pathname
-    );
+    const found = routes.find(({ link }) => link === path);
+    const menuFound = menuOptions.find(({ link }) => link === path);
 
     if (menuFound) {
-      found = 1;
+      props.setValue(1);
+      props.setSelectedIndex(menuFound.selectedIndex);
+    } else if (found === undefined) {
+      props.setValue(false);
+    } else {
+      props.setValue(found.activeIndex);
     }
-
-    return found === -1 ? false : found;
   };
+
+  useEffect(() => {
+    activeIndex();
+  }, [path]);
+
+  function handleListKeyDown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpen(false);
+    }
+  }
 
   const tabs = (
     <>
@@ -238,7 +255,55 @@ export default function Header(props) {
       >
         Free Estimate
       </Button>
-      <Menu
+
+      <Popper
+        open={openMenu}
+        anchorEl={anchorEl}
+        role={undefined}
+        transition
+        disablePortal
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === 'bottom' ? 'center top' : 'center bottom',
+            }}
+          >
+            <Paper classes={{ root: classes.menu }} elevation={0}>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  autoFocusItem={open}
+                  id='simple-menu'
+                  onMouseLeave={handleClose}
+                  disablePadding
+                  onKeyDown={handleListKeyDown}
+                >
+                  {menuOptions.map((option, i) => (
+                    <MenuItem
+                      key={`${option}${i}`}
+                      component={Link}
+                      href={option.link}
+                      classes={{ root: classes.menuItem }}
+                      onClick={(event) => {
+                        handleMenuItemClick(event, i);
+                        props.setValue(1);
+                        handleClose();
+                      }}
+                      selected={i === props.selectedIndex && props.value === 1}
+                    >
+                      {option.name}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+
+      {/* <Menu
         id='simple-menu'
         anchorEl={anchorEl}
         open={openMenu}
@@ -248,24 +313,7 @@ export default function Header(props) {
         elevation={0}
         style={{ zIndex: 1302 }}
         keepMounted
-      >
-        {menuOptions.map((option, i) => (
-          <MenuItem
-            key={`${option}${i}`}
-            component={Link}
-            href={option.link}
-            classes={{ root: classes.menuItem }}
-            onClick={(event) => {
-              handleMenuItemClick(event, i);
-              props.setValue(1);
-              handleClose();
-            }}
-            selected={i === props.selectedIndex && props.value === 1}
-          >
-            {option.name}
-          </MenuItem>
-        ))}
-      </Menu>
+      ></Menu> */}
     </>
   );
 
@@ -346,14 +394,14 @@ export default function Header(props) {
               onClick={() => props.setValue(0)}
               className={classes.logoContainer}
             >
-              <img alt='company logo' src='/assets/logo.svg' className={classes.logo} />
+              <img
+                alt='company logo'
+                src='/assets/logo.svg'
+                className={classes.logo}
+              />
             </Button>
-            <Hidden mdDown>
-              {tabs}
-            </Hidden>
-            <Hidden lgUp>
-              {drawer}
-            </Hidden>
+            <Hidden mdDown>{tabs}</Hidden>
+            <Hidden lgUp>{drawer}</Hidden>
           </Toolbar>
         </AppBar>
       </ElevationScroll>

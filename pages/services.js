@@ -227,7 +227,7 @@ export default function Services(props) {
             <img
               className={classes.icon}
               alt='Website icon'
-              src='/assets/websitesIcon.svg'
+              src='/assets/websiteIcon.svg'
               width='250em'
             />
           </Grid>

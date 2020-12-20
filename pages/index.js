@@ -349,7 +349,7 @@ export default function LandingPage(props) {
             <img
               className={classes.icon}
               alt='Website icon'
-              src='/assets/websiteIcon/svg'
+              src='/assets/websiteIcon.svg'
             />
           </Grid>
         </Grid>
