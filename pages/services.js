@@ -46,7 +46,7 @@ export default function Services(props) {
   const theme = useTheme();
   const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
   const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
-  
+
   return (
     <Grid container direction='column'>
       <Head>
@@ -91,7 +91,7 @@ export default function Services(props) {
           <Grid
             item
             style={{
-              textAlign: matchesSM ? 'center' : 'undefined',
+              textAlign: matchesSM ? 'center' : undefined,
               width: matchesSM ? undefined : '35em',
             }}
           >

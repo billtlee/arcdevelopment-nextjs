@@ -8,6 +8,7 @@
     "@material-ui/styles": "^4.11.2",
     "axios": "^0.21.0",
     "clsx": "latest",
+    "fontfaceobserver": "^2.1.0",
     "fs-extra": "^9.0.1",
     "imagemin-mozjpeg": "^9.0.0",
     "imagemin-optipng": "^8.0.0",
@@ -17,6 +18,8 @@
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-ga": "^3.3.0",
+    "react-lazy-load-image-component": "^1.5.1",
     "react-lottie": "^1.2.3"
   },
   "scripts": {

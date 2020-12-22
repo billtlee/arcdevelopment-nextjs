@@ -1,4 +1,5 @@
 import { useState, useRef, Fragment } from 'react';
+import ReactGA from 'react-ga';
 import { cloneDeep } from 'lodash';
 import Head from 'next/head';
 import axios from 'axios';
@@ -589,6 +590,10 @@ export default function Estimate() {
 
   const sendEstimate = () => {
     setLoading(true);
+    ReactGA.event({
+      category: 'Estimate',
+      action: 'Estimate Sent',
+    });
     axios
       .get(
         'https://us-central1-material-ui-course-b9cbe.cloudfunctions.net/sendMail',
@@ -947,6 +952,10 @@ export default function Estimate() {
               getFeatures();
               getCustomFeatures();
               getCategory();
+              ReactGA.event({
+                category: 'Estimate',
+                action: 'Estimate Checked',
+              });
             }}
           >
             Get Estimate

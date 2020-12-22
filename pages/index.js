@@ -1,4 +1,5 @@
 import Link from '../src/Link';
+import ReactGA from 'react-ga';
 import Head from 'next/head';
 import Lottie from 'react-lottie';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -13,6 +14,10 @@ import CallToAction from '../src/ui/CallToAction';
 
 import ButtonArrow from '../src/ui/ButtonArrow';
 import animationData from '../src/animations/landinganimation/data';
+import {
+  LazyLoadImage,
+  LazyLoadComponent,
+} from 'react-lazy-load-image-component';
 
 const useStyles = makeStyles((theme) => ({
   animation: {
@@ -100,6 +105,8 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   infoBackground: {
+    positiion: 'absolute',
+    zIndex: -1,
     backgroundImage: `url('/assets/infoBackground.svg')`,
     backgroundPosition: 'center',
     backgroundSize: 'cover',
@@ -177,7 +184,13 @@ export default function LandingPage(props) {
                   href='/estimate'
                   className={classes.estimateButton}
                   variant='contained'
-                  onClick={() => props.setValue(5)}
+                  onClick={() => {
+                    props.setValue(5);
+                    ReactGA.event({
+                      category: 'Estimate',
+                      action: 'Homepage Pressed',
+                    });
+                  }}
                 >
                   Free Estimate
                 </Button>
@@ -247,7 +260,7 @@ export default function LandingPage(props) {
             </Button>
           </Grid>
           <Grid item>
-            <img
+            <LazyLoadImage
               className={classes.icon}
               alt='Custom software icon'
               src='/assets/customSoftware.svg'
@@ -266,7 +279,7 @@ export default function LandingPage(props) {
           <Grid
             item
             style={{
-              textAlign: matchesSM ? 'center' : 'undefined',
+              textAlign: matchesSM ? 'center' : undefined,
             }}
           >
             <Typography variant='h4'>iOS/Android App Development</Typography>
@@ -296,7 +309,7 @@ export default function LandingPage(props) {
             </Button>
           </Grid>
           <Grid item style={{ marginRight: matchesSM ? 0 : '5em' }}>
-            <img
+            <LazyLoadImage
               className={classes.icon}
               alt='Mobile phone icon'
               src='/assets/mobileIcon.svg'
@@ -346,7 +359,7 @@ export default function LandingPage(props) {
             </Button>
           </Grid>
           <Grid item>
-            <img
+            <LazyLoadImage
               className={classes.icon}
               alt='Website icon'
               src='/assets/websiteIcon.svg'
@@ -397,17 +410,18 @@ export default function LandingPage(props) {
               </Grid>
             </CardContent>
           </Card>
-          <div className={classes.revolutionBackground} />
+          <LazyLoadComponent threshold={850}>
+            <div className={classes.revolutionBackground} />
+          </LazyLoadComponent>
         </Grid>
       </Grid>
       <Grid item>
         {/*----------Information Block----------*/}
         <Grid
           container
-          style={{ height: '80em' }}
+          style={{ height: '77em' }}
           direction='row'
           alignItems='center'
-          className={classes.infoBackground}
         >
           <Grid
             item
@@ -479,12 +493,17 @@ export default function LandingPage(props) {
                 </Grid>
               </Grid>
             </Grid>
+            <LazyLoadComponent threshold={700}>
+              <div className={classes.infoBackground} />
+            </LazyLoadComponent>
           </Grid>
         </Grid>
       </Grid>
       <Grid item>
         {/*----------Call To Action Block----------*/}
-        <CallToAction setValue={props.setValue} />
+        <LazyLoadComponent threshold={700}>
+          <CallToAction setValue={props.setValue} />
+        </LazyLoadComponent>
       </Grid>
     </Grid>
   );

@@ -158,10 +158,7 @@ export default function Websites(props) {
           </Grid>
         </Grid>
         <Grid item className={classes.paragraphContainer}>
-          <Typography
-            align={matchesSM ? 'center' : 'undefined'}
-            variant='body1'
-          >
+          <Typography align={matchesSM ? 'center' : undefined} variant='body1'>
             Knowledge is power, and data is 21st Century gold. Analyzing this
             data can reveal hidden patterns and trends in your business,
             empowering you to make smarter decisions with measurable effects.
@@ -200,14 +197,14 @@ export default function Websites(props) {
         >
           <Typography
             variant='body1'
-            align={matchesSM ? 'center' : 'undefined'}
+            align={matchesSM ? 'center' : undefined}
             paragraph
           >
             It’s no secret that people like to shop online.
           </Typography>
           <Typography
             variant='body1'
-            align={matchesSM ? 'center' : 'undefined'}
+            align={matchesSM ? 'center' : undefined}
             paragraph
           >
             In 2017 over $2.3 trillion was spent in e-commerce, and it’s time
@@ -237,7 +234,7 @@ export default function Websites(props) {
         <Grid item style={{ marginLeft: matchesSM ? 0 : '1em' }}>
           <Typography
             variant='body1'
-            align={matchesSM ? 'center' : 'undefined'}
+            align={matchesSM ? 'center' : undefined}
             className={classes.paragraphContainer}
           >
             Draw people in with a dazzling website. Showing off your products
@@ -280,21 +277,21 @@ export default function Websites(props) {
         >
           <Typography
             variant='body1'
-            align={matchesSM ? 'center' : 'undefined'}
+            align={matchesSM ? 'center' : undefined}
             paragraph
           >
             How often have you ever been to the second page of Google results?
           </Typography>
           <Typography
             variant='body1'
-            align={matchesSM ? 'center' : 'undefined'}
+            align={matchesSM ? 'center' : undefined}
             paragraph
           >
             If you’re like us, probably never.
           </Typography>
           <Typography
             variant='body1'
-            align={matchesSM ? 'center' : 'undefined'}
+            align={matchesSM ? 'center' : undefined}
             paragraph
           >
             Customers don’t go there either, so we make sure your website is

@@ -1,4 +1,5 @@
 import { cloneElement, useState, useEffect } from 'react';
+import ReactGA from 'react-ga';
 import Link from '../Link';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -22,6 +23,11 @@ import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
+import Accordian from '@material-ui/core/Accordion';
+import AccordianSummary from '@material-ui/core/AccordionSummary';
+import AccordianDetails from '@material-ui/core/AccordionDetails';
+import Grid from '@material-ui/core/Grid';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { makeStyles } from '@material-ui/styles';
 
@@ -124,16 +130,40 @@ const useStyles = makeStyles((theme) => ({
   appbar: {
     zIndex: theme.zIndex.modal + 1,
   },
+  expansion: {
+    '&.Mui-expanded': {
+      margin: 0,
+      borderBottom: 0,
+    },
+    '&::before': {
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+    backgroundColor: theme.palette.common.blue,
+  },
+  expansionDetails: {
+    padding: 0,
+    backgroundColor: theme.palette.primary.light,
+  },
+  expansionSummary: {
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    },
+    paddind: '0 24px 0 16px',
+    backgroundColor: (props) =>
+      props.value === 1 ? 'rgba(0, 0, 0, 0.14)' : 'inherit',
+  },
 }));
 
 export default function Header(props) {
-  const classes = useStyles();
+  const classes = useStyles(props);
   const theme = useTheme();
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
+  const [previousURL, setPreviousURL] = useState('');
 
   const path = typeof window !== 'undefined' ? window.location.pathname : null;
 
@@ -159,28 +189,22 @@ export default function Header(props) {
 
   const menuOptions = [
     {
-      name: 'Services',
-      link: '/services',
+      name: 'Custom Software Development',
+      link: '/customSoftware',
       activeIndex: 1,
       selectedIndex: 0,
     },
     {
-      name: 'Custom Software Development',
-      link: '/customsoftware',
+      name: 'iOS/Android App Development',
+      link: '/mobileApps',
       activeIndex: 1,
       selectedIndex: 1,
-    },
-    {
-      name: 'iOS/Android App Development',
-      link: '/mobileapps',
-      activeIndex: 1,
-      selectedIndex: 2,
     },
     {
       name: 'Website Development',
       link: '/websites',
       activeIndex: 1,
-      selectedIndex: 3,
+      selectedIndex: 2,
     },
   ];
 
@@ -191,7 +215,7 @@ export default function Header(props) {
       link: '/services',
       activeIndex: 1,
       ariaOwns: anchorEl ? 'simple-menu' : undefined,
-      ariaPopup: anchorEl ? 'true' : undefined,
+      ariaPopup: anchorEl ? true : undefined,
       mouseOver: (event) => handleClick(event),
     },
     { name: 'The Revolution', link: '/revolution', activeIndex: 2 },
@@ -214,6 +238,11 @@ export default function Header(props) {
   };
 
   useEffect(() => {
+    if (previousURL !== window.location.pathname) {
+      setPreviousURL(window.location.pathname);
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+
     activeIndex();
   }, [path]);
 
@@ -227,7 +256,7 @@ export default function Header(props) {
   const tabs = (
     <>
       <Tabs
-        value={activeIndex()}
+        value={props.value}
         onChange={handleChange}
         className={classes.tabContainer}
         indicatorColor='primary'
@@ -242,6 +271,7 @@ export default function Header(props) {
             aria-owns={route.ariaOwns}
             aria-haspopup={route.ariaPopup}
             onMouseOver={route.mouseOver}
+            onMouseLeave={() => setOpenMenu(false)}
           />
         ))}
       </Tabs>
@@ -251,7 +281,13 @@ export default function Header(props) {
         variant='contained'
         color='secondary'
         className={classes.button}
-        onClick={() => props.setValue(5)}
+        onClick={() => {
+          props.setValue(5);
+          ReactGA.event({
+            category: 'Estimate',
+            action: 'Desktop Header Pressed',
+          });
+        }}
       >
         Free Estimate
       </Button>
@@ -262,19 +298,20 @@ export default function Header(props) {
         role={undefined}
         transition
         disablePortal
+        placement='bottom-start'
       >
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
             style={{
-              transformOrigin:
-                placement === 'bottom' ? 'center top' : 'center bottom',
+              transformOrigin: 'top-left',
             }}
           >
             <Paper classes={{ root: classes.menu }} elevation={0}>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
-                  autoFocusItem={open}
+                  onMouseOver={() => setOpenMenu(true)}
+                  autoFocusItem={false}
                   id='simple-menu'
                   onMouseLeave={handleClose}
                   disablePadding
@@ -291,7 +328,11 @@ export default function Header(props) {
                         props.setValue(1);
                         handleClose();
                       }}
-                      selected={i === props.selectedIndex && props.value === 1}
+                      selected={
+                        i === props.selectedIndex &&
+                        props.value === 1 &&
+                        window.location.pathname !== '/services'
+                      }
                     >
                       {option.name}
                     </MenuItem>
@@ -329,25 +370,91 @@ export default function Header(props) {
       >
         <div className={classes.toolbarMargin} />
         <List disablePadding>
-          {routes.map((route) => (
-            <ListItem
-              divider
-              key={`${route}${route.activeIndex}`}
-              button
-              component={Link}
-              href={route.link}
-              selected={props.value === route.activeIndex}
-              classes={{ selected: classes.drawerItemSelected }}
-              onClick={() => {
-                setOpenDrawer(false);
-                props.setValue(route.activeIndex);
-              }}
-            >
-              <ListItemText className={classes.drawerItem} disableTypography>
-                {route.name}
-              </ListItemText>
-            </ListItem>
-          ))}
+          {routes.map((route) =>
+            route.name === 'Services' ? (
+              <Accordian
+                key={route.name}
+                elevation={0}
+                classes={{ root: classes.expansion }}
+              >
+                <AccordianSummary
+                  classes={{ root: classes.expansionSummary }}
+                  expandIcon={<ExpandMoreIcon color='secondary' />}
+                >
+                  <ListItemText
+                    className={classes.drawerItem}
+                    disableTypography
+                    style={{ opacity: props.value === 1 ? 1 : null }}
+                    onClick={() => {
+                      setOpenDrawer(false);
+                      props.setValue(route.activeIndex);
+                    }}
+                  >
+                    <Link color='inherit' href={route.link}>
+                      {route.name}
+                    </Link>
+                  </ListItemText>
+                </AccordianSummary>
+                <AccordianDetails classes={{ root: classes.expansionDetails }}>
+                  <Grid container direction='column'>
+                    {menuOptions.map((route) => (
+                      <Grid item>
+                        <ListItem
+                          divider
+                          key={`${route}${route.selectedIndex}`}
+                          button
+                          component={Link}
+                          href={route.link}
+                          selected={
+                            props.selectedIndex === route.selectedIndex &&
+                            props.value === 1 &&
+                            window.location.path !== '/services'
+                          }
+                          classes={{ selected: classes.drawerItemSelected }}
+                          onClick={() => {
+                            setOpenDrawer(false);
+                            props.setSelectedIndex(route.selectedIndex);
+                          }}
+                        >
+                          <ListItemText
+                            className={classes.drawerItem}
+                            disableTypography
+                          >
+                            {route.name
+                              .split(' ')
+                              .filter((word) => word !== 'Development')
+                              .join(' ')}
+                            <br />
+                            <span style={{ fontSize: '0.75rem' }}>
+                              Development
+                            </span>
+                          </ListItemText>
+                        </ListItem>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </AccordianDetails>
+              </Accordian>
+            ) : (
+              <ListItem
+                divider
+                key={`${route}${route.activeIndex}`}
+                button
+                component={Link}
+                href={route.link}
+                selected={props.value === route.activeIndex}
+                classes={{ selected: classes.drawerItemSelected }}
+                onClick={() => {
+                  setOpenDrawer(false);
+                  props.setValue(route.activeIndex);
+                }}
+              >
+                <ListItemText className={classes.drawerItem} disableTypography>
+                  {route.name}
+                </ListItemText>
+              </ListItem>
+            )
+          )}
         </List>
         <List>
           <ListItem
@@ -355,6 +462,10 @@ export default function Header(props) {
             onClick={() => {
               setOpenDrawer(false);
               props.setValue(5);
+              ReactGA.event({
+                category: 'Estimate',
+                action: 'Mobile Header Pressed',
+              });
             }}
             divider
             button

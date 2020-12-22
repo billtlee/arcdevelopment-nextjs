@@ -9,9 +9,9 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Hidden from '@material-ui/core/Hidden';
 
 import documentsAnimation from '../src/animations/documentsAnimation/data';
-import scaleAnimation from '../animations/scaleAnimation/data.json';
-import automationOption from '../animations/automationAnimation/data.json';
-import uxOption from '../animations/uxAnimation/data';
+import scaleAnimation from '../src/animations/scaleAnimation/data.json';
+import automationOption from '../src/animations/automationAnimation/data.json';
+import uxOption from '../src/animations/uxAnimation/data';
 import CallToAction from '../src/ui/CallToAction';
 
 const useStyles = makeStyles((theme) => ({
@@ -251,7 +251,7 @@ export default function CustomSoftware(props) {
       <Grid
         item
         container
-        alignItems={matchesMD ? 'center' : 'undefined'}
+        alignItems={matchesMD ? 'center' : undefined}
         direction={matchesMD ? 'column' : 'row'}
         className={classes.rowContainer}
         justify='space-between'
@@ -348,7 +348,7 @@ export default function CustomSoftware(props) {
         <Grid item container direction='column' alignItems='center'>
           <Grid item>
             <img
-              src='/assets/roots.svg'
+              src='/assets/root.svg'
               alt='tree with roots extending out'
               height={matchesSM ? '300em' : '450em'}
               width={matchesSM ? '300em' : '450em'}
@@ -372,7 +372,7 @@ export default function CustomSoftware(props) {
       <Grid
         item
         container
-        alignItems={matchesMD ? 'center' : 'undefined'}
+        alignItems={matchesMD ? 'center' : undefined}
         direction={matchesMD ? 'column' : 'row'}
         justify='space-between'
         className={classes.rowContainer}

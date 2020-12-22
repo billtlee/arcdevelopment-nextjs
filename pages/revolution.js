@@ -195,7 +195,7 @@ export default function Revolution(props) {
         style={{ marginTop: '5em' }}
       >
         <Grid item lg>
-          <img
+          <LazyLoadImage
             src='/assets/vision.svg'
             alt='mountain through binoculars'
             style={{
@@ -427,7 +427,8 @@ export default function Revolution(props) {
             </Grid>
           </Grid>
           <Grid item lg style={{ alignSelf: 'center' }}>
-            <img
+            <LazyLoadImage
+              threshold={400}
               src={section.icon}
               alt={section.iconAlt}
               width='100%'

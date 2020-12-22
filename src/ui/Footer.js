@@ -76,7 +76,7 @@ export default function Footer(props) {
               <Grid
                 item
                 component={Link}
-                ref='/services'
+                href='/services'
                 onClick={() => {
                   props.setValue(1);
                   props.setSelectedIndex(0);

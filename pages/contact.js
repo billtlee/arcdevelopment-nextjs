@@ -1,4 +1,5 @@
 import { useState, Fragment } from 'react';
+import ReactGA from 'react-ga';
 import Link from '../src/Link';
 import Head from 'next/head';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -129,6 +130,10 @@ export default function Contact(props) {
 
   const onConfirm = () => {
     setLoading(true);
+    ReactGA.event({
+      category: 'Message',
+      action: 'Sent Message',
+    });
     axios
       .get(
         'https://us-central1-material-ui-course-b9cbe.cloudfunctions.net/sendMail',
@@ -503,7 +508,13 @@ export default function Contact(props) {
             to='/estimate'
             variant='contained'
             className={classes.estimateButton}
-            onClick={() => props.setValue(5)}
+            onClick={() => {
+              props.setValue(5);
+              ReactGA.event({
+                category: 'Estimate',
+                action: 'Contact page Pressed',
+              });
+            }}
           >
             Free Estimate
           </Button>

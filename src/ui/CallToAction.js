@@ -1,4 +1,5 @@
 import Link from '../Link';
+import ReactGA from 'react-ga';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -70,13 +71,20 @@ export default function CallToAction(props) {
       >
         <Grid container direction='column'>
           <Grid item>
-            <Typography variant='h1' gutterBottom style={{lineHeight: matchesSM ? 1.1 : null}}>
+            <Typography
+              variant='h1'
+              gutterBottom
+              style={{ lineHeight: matchesSM ? 1.1 : null }}
+            >
               Simple Software.
               <br />
-              {matchesSM && <br/>}
+              {matchesSM && <br />}
               Revolutionary Results.
             </Typography>
-            <Typography variant='subtitle2' style={{ fontSize: matchesSM ? '1.25rem' : '1.5rem' }}>
+            <Typography
+              variant='subtitle2'
+              style={{ fontSize: matchesSM ? '1.25rem' : '1.5rem' }}
+            >
               Take advantage of the 21st Century.
             </Typography>
             <Grid container justify={matchesSM ? 'center' : undefined} item>
@@ -104,7 +112,13 @@ export default function CallToAction(props) {
           href='/estimate'
           variant='contained'
           className={classes.estimateButton}
-          onClick={() => props.setValue(5)}
+          onClick={() => {
+            props.setValue(5);
+            ReactGA.event({
+              category: 'Estimate',
+              action: 'Call to action Pressed',
+            });
+          }}
         >
           Free Estimate
         </Button>
